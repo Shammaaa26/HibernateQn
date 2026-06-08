@@ -10,17 +10,25 @@
 
         <class>com.demo.entity.Course</class>
         <class>com.demo.entity.Student</class>
+        <class>com.demo.entity.Address</class>
+        <class>com.demo.entity.Department</class>
 
         <properties>
 
             <property name="jakarta.persistence.jdbc.driver"
-                      value="org.h2.Driver"/>
+                      value="com.mysql.cj.jdbc.Driver"/>
 
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
+                      value="jdbc:mysql://localhost:3306/demodb"/>
+
+            <property name="jakarta.persistence.jdbc.user"
+                      value="root"/>
+
+            <property name="jakarta.persistence.jdbc.password"
+                      value="Shamma@2006"/>
 
             <property name="hibernate.hbm2ddl.auto"
-                      value="create-drop"/>
+                      value="update"/>
 
             <property name="hibernate.show_sql"
                       value="true"/>

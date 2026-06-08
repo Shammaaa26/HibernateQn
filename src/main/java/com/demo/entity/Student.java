@@ -1,6 +1,19 @@
 package com.demo.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import java.util.List;
+import java.util.ArrayList;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "students")
@@ -19,24 +32,47 @@ public class Student {
     @Column(unique = true)
     private String email;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
+    
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "dept_id")
+    private Department department;
 
+    @ManyToMany(
+    	    cascade = {
+    	        CascadeType.PERSIST,
+    	        CascadeType.MERGE
+    	    }
+    	)
+    	@JoinTable(
+    	    name = "student_course",
+    	    joinColumns = @JoinColumn(name = "student_id"),
+    	    inverseJoinColumns = @JoinColumn(name = "course_id")
+    	)
+    	private List<Course> courses = new ArrayList<>();
+
+    
+    // Default Constructor
     public Student() {
     }
 
-    public Student(String firstName,
-                   String lastName,
-                   String email) {
-
+    // Parameterized Constructor
+    public Student(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
+    // Getters and Setters
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -62,26 +98,45 @@ public class Student {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public Course getCourse() {
-        return course;
+    
+    public Address getAddress() {
+        return address;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+    
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
+    }
+    
+    public void enrollCourse(Course course) {
+        courses.add(course);
+        course.getStudents().add(this);
     }
 
     @Override
     public String toString() {
 
+    	String courseNames = courses.toString();  
         return "Student [id=" + id +
                 ", firstName=" + firstName +
                 ", lastName=" + lastName +
                 ", email=" + email +
-                ", course=" +
-                (course != null ?
-                        course.getCourseName()
-                        : "No Course")
-                + "]";
+                ", courses=" + courseNames +
+                "]";
     }
 }
