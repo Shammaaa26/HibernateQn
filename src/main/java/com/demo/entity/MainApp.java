@@ -34,33 +34,55 @@ public class MainApp {
         em.getTransaction().commit();
 
         System.out.println("Courses Saved!");
-
+        
         System.out.println("\n===== STEP 2 : CREATE STUDENTS =====");
 
         em.getTransaction().begin();
 
-        Student s1 =
-                new Student(
-                        "Alice",
-                        "Smith",
-                        "alice@demo.com");
+        Student s1 = new Student("Alice", "Smith", "alice2026@demo.com");
+        Student s2 = new Student("John", "Doe", "john2026@demo.com");
+        Student s3 = new Student("Emma", "Wilson", "emma2026@demo.com");
+        Address a1 =
+        	    new Address(
+        	        "MG Road",
+        	        "Calicut",
+        	        "673001");
 
-        Student s2 =
-                new Student(
-                        "John",
-                        "Doe",
-                        "john@demo.com");
+        	Address a2 =
+        	    new Address(
+        	        "Beach Road",
+        	        "Kochi",
+        	        "682001");
 
-        Student s3 =
-                new Student(
-                        "Emma",
-                        "Wilson",
-                        "emma@demo.com");
+        	Address a3 =
+        	    new Address(
+        	        "Town Hall Road",
+        	        "Thrissur",
+        	        "680001");
+       
+        s1.setAddress(a1);
+        s2.setAddress(a2);
+        s3.setAddress(a3);
+        
+        Department cs = new Department("Computer Science");
+        Department it = new Department("Information Technology");
+        
+        cs.addStudent(s1);
+        cs.addStudent(s2);
 
-        s1.setCourse(java);
-        s2.setCourse(java);
-        s3.setCourse(spring);
+        it.addStudent(s3);
+        
+        s1.enrollCourse(java);
 
+        s2.enrollCourse(java);
+
+        s3.enrollCourse(spring);
+        
+        em.persist(cs);
+        em.persist(it);
+        System.out.println("S1 = " + s1.getEmail());
+        System.out.println("S2 = " + s2.getEmail());
+        System.out.println("S3 = " + s3.getEmail());
         em.persist(s1);
         em.persist(s2);
         em.persist(s3);
@@ -81,43 +103,51 @@ public class MainApp {
 
         System.out.println("\n===== STEP 4 : FIND STUDENT BY ID =====");
 
-        Student found =
-                em.find(Student.class, 1);
-
+        Student found = em.find(Student.class, 1);
         System.out.println(found);
 
         System.out.println("\n===== STEP 5 : UPDATE EMAIL =====");
 
-        em.getTransaction().begin();
+        if (found != null) {
 
-        found.setEmail("alice_new@demo.com");
+            em.getTransaction().begin();
 
-        em.merge(found);
+            found.setEmail("alice_new@demo.com");
 
-        em.getTransaction().commit();
+            em.merge(found);
 
-        System.out.println("Updated Student:");
-        System.out.println(found);
+            em.getTransaction().commit();
 
+            System.out.println("Updated Student:");
+            System.out.println(found);
+
+        } else {
+
+            System.out.println("Student with ID 1 not found!");
+
+        }
         System.out.println("\n===== STEP 6 : DELETE STUDENT ID 2 =====");
 
         em.getTransaction().begin();
 
-        Student deleteStudent =
-                em.find(Student.class, 2);
+        Student deleteStudent = em.find(Student.class, 2);
 
-        em.remove(deleteStudent);
+        if (deleteStudent != null) {
+            em.remove(deleteStudent);
+            System.out.println("Student Deleted!");
+        } else {
+            System.out.println("Student with ID 2 not found.");
+        }
 
         em.getTransaction().commit();
-
         System.out.println("Student Deleted!");
 
         System.out.println("\n===== STEP 7 : STUDENTS IN JAVA PROGRAMMING =====");
 
         List<Student> javaStudents =
-                em.createQuery(
-                        "SELECT s FROM Student s WHERE s.course.courseName = :name",
-                        Student.class)
+        		em.createQuery(
+        			    "SELECT s FROM Student s JOIN s.courses c WHERE c.courseName = :name",
+        			    Student.class)
                         .setParameter(
                                 "name",
                                 "Java Programming")

@@ -6,21 +6,27 @@ version="3.0">
 
     <persistence-unit name="HibernateJPADemo">
 
-        <properties>
+       <properties>
 
-            <property name="jakarta.persistence.jdbc.driver"
-                      value="org.h2.Driver"/>
+    <property name="jakarta.persistence.jdbc.driver"
+              value="com.mysql.cj.jdbc.Driver"/>
 
-            <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"/>
+    <property name="jakarta.persistence.jdbc.url"
+              value="jdbc:mysql://localhost:3306/demodb"/>
 
-            <property name="hibernate.hbm2ddl.auto"
-                      value="create-drop"/>
+    <property name="jakarta.persistence.jdbc.user"
+              value="root"/>
 
-            <property name="hibernate.show_sql"
-                      value="true"/>
+    <property name="jakarta.persistence.jdbc.password"
+              value="Niranjana@2026"/>
 
-        </properties>
+    <property name="hibernate.hbm2ddl.auto"
+              value="update"/>
+
+    <property name="hibernate.show_sql"
+              value="true"/>
+
+</properties>
 
     </persistence-unit>
 
